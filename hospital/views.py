@@ -1,13 +1,13 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import redirect
-from django.urls import reverse_lazy
+from django.http import JsonResponse
+from django.shortcuts import redirect, get_object_or_404
+from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, TemplateView
 
-from .models import Doctor, Patient, Appointment
+from .models import Doctor, Patient, Appointment, Notification
 from .forms import DoctorForm, PatientForm, AppointmentForm
-
 
 class HomeView(TemplateView):
     """Dashboard showing overall hospital statistics."""
@@ -162,3 +162,57 @@ class AppointmentDeleteView(DeleteView):
     def form_valid(self, form):
         messages.success(self.request, 'Appointment cancelled/removed.')
         return super().form_valid(form)
+
+
+# ---------------------- NOTIFICATION VIEWS ----------------------
+
+class NotificationListView(ListView):
+    """Full page listing every notification, newest first."""
+    model = Notification
+    template_name = 'hospital/notification_list.html'
+    context_object_name = 'notifications'
+    paginate_by = 20
+
+
+def mark_notification_read(request, pk):
+    """Mark a single notification as read, then redirect to its linked page (or back)."""
+    notification = get_object_or_404(Notification, pk=pk)
+    notification.is_read = True
+    notification.save()
+
+    if notification.link:
+        try:
+            return redirect(reverse(notification.link))
+        except Exception:
+            pass
+    return redirect(request.META.get('HTTP_REFERER', 'home'))
+
+
+def mark_all_notifications_read(request):
+    """Mark every notification as read."""
+    Notification.objects.filter(is_read=False).update(is_read=True)
+    messages.success(request, 'All notifications marked as read.')
+    return redirect(request.META.get('HTTP_REFERER', 'home'))
+
+
+def notifications_unread_api(request):
+    """
+    JSON endpoint polled by the navbar bell (via JavaScript) so notifications
+    update live without a full page reload.
+    """
+    unread_count = Notification.objects.filter(is_read=False).count()
+    latest = Notification.objects.all()[:8]
+    data = {
+        'unread_count': unread_count,
+        'notifications': [
+            {
+                'id': n.id,
+                'message': n.message,
+                'is_read': n.is_read,
+                'created_at': n.created_at.strftime('%b %d, %I:%M %p'),
+                'link': n.link,
+            }
+            for n in latest
+        ],
+    }
+    return JsonResponse(data)

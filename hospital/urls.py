@@ -21,4 +21,10 @@ urlpatterns = [
     path('appointments/add/', views.AppointmentCreateView.as_view(), name='appointment-add'),
     path('appointments/<int:pk>/edit/', views.AppointmentUpdateView.as_view(), name='appointment-edit'),
     path('appointments/<int:pk>/delete/', views.AppointmentDeleteView.as_view(), name='appointment-delete'),
+    
+    # Notifications
+    path('notifications/', views.NotificationListView.as_view(), name='notification-list'),
+    path('notifications/<int:pk>/read/', views.mark_notification_read, name='notification-read'),
+    path('notifications/mark-all-read/', views.mark_all_notifications_read, name='notification-mark-all-read'),
+    path('notifications/unread-api/', views.notifications_unread_api, name='notification-unread-api'),
 ]

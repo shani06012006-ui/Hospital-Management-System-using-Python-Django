@@ -11,11 +11,36 @@
 
     <div class="navbar">
         <a href="{% url 'home' %}" class="brand">Hospital<span>MS</span></a>
-        <nav>
+        <nav style="display:flex; align-items:center;">
             <a href="{% url 'home' %}">Dashboard</a>
             <a href="{% url 'doctor-list' %}">Doctors</a>
             <a href="{% url 'patient-list' %}">Patients</a>
             <a href="{% url 'appointment-list' %}">Appointments</a>
+
+            <div class="notif-wrapper" id="notif-wrapper">
+                <button id="notif-bell-btn" class="notif-bell" type="button" aria-label="Notifications">
+                    🔔
+                    <span id="notif-badge" class="notif-badge" style="{% if nav_unread_count == 0 %}display:none;{% endif %}">{{ nav_unread_count }}</span>
+                </button>
+
+                <div id="notif-dropdown" class="notif-dropdown">
+                    <div class="notif-dropdown-header">
+                        <strong>Notifications</strong>
+                        <a href="{% url 'notification-mark-all-read' %}" class="notif-mark-all">Mark all read</a>
+                    </div>
+                    <div id="notif-items">
+                        {% for n in nav_notifications %}
+                            <a href="{% url 'notification-read' n.pk %}" class="notif-item {% if not n.is_read %}unread{% endif %}">
+                                <div class="notif-item-msg">{{ n.message }}</div>
+                                <div class="notif-item-time">{{ n.created_at|timesince }} ago</div>
+                            </a>
+                        {% empty %}
+                            <div class="notif-empty">No notifications yet.</div>
+                        {% endfor %}
+                    </div>
+                    <a href="{% url 'notification-list' %}" class="notif-view-all">View all notifications</a>
+                </div>
+            </div>
         </nav>
     </div>
 
@@ -31,5 +56,56 @@
         {% block content %}{% endblock %}
     </div>
 
+    <script>
+        // Toggle the notification dropdown
+        const notifBtn = document.getElementById('notif-bell-btn');
+        const notifWrapper = document.getElementById('notif-wrapper');
+
+        notifBtn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            notifWrapper.classList.toggle('open');
+        });
+
+        document.addEventListener('click', function (e) {
+            if (!notifWrapper.contains(e.target)) {
+                notifWrapper.classList.remove('open');
+            }
+        });
+
+        // Live polling: fetch unread notifications every 15 seconds
+        const NOTIF_API_URL = "{% url 'notification-unread-api' %}";
+        const NOTIF_READ_URL_BASE = "/notifications/";
+
+        function refreshNotifications() {
+            fetch(NOTIF_API_URL)
+                .then(response => response.json())
+                .then(data => {
+                    const badge = document.getElementById('notif-badge');
+                    if (data.unread_count > 0) {
+                        badge.style.display = 'inline-block';
+                        badge.textContent = data.unread_count;
+                    } else {
+                        badge.style.display = 'none';
+                    }
+
+                    const itemsContainer = document.getElementById('notif-items');
+                    if (data.notifications.length === 0) {
+                        itemsContainer.innerHTML = '<div class="notif-empty">No notifications yet.</div>';
+                        return;
+                    }
+
+                    itemsContainer.innerHTML = data.notifications.map(function (n) {
+                        const unreadClass = n.is_read ? '' : 'unread';
+                        return '<a href="' + NOTIF_READ_URL_BASE + n.id + '/read/" class="notif-item ' + unreadClass + '">' +
+                               '<div class="notif-item-msg">' + n.message + '</div>' +
+                               '<div class="notif-item-time">' + n.created_at + '</div>' +
+                               '</a>';
+                    }).join('');
+                })
+                .catch(err => console.error('Notification refresh failed:', err));
+        }
+
+        setInterval(refreshNotifications, 15000);
+    </script>
 </body>
 </html>
