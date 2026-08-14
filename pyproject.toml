@@ -1,0 +1,11 @@
+[tool.ruff]
+# Auto-generated migration files should never be linted.
+exclude = [
+    "*/migrations/*.py",
+]
+
+[tool.ruff.lint]
+# RUF012 flags Django's standard `CHOICES = [...]` / `ordering = [...]` class
+# attributes as "mutable defaults". This is a false positive for Django models:
+# these lists are never mutated at runtime, so it's safe to ignore project-wide.
+ignore = ["RUF012"]

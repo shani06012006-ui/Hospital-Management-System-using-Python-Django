@@ -297,8 +297,8 @@ table tr:hover { background: #f9fbfd; }
     border-left: 3px solid var(--primary);
 }
 
-.notif-item-msg { font-size: 13px; line-height: 1.4; }
-.notif-item-time { font-size: 11px; color: var(--muted); margin-top: 3px; }
+.notif-item-msg { font-size: 13px; line-height: 1.4; color: var(--text) !important; }
+.notif-item-time { font-size: 11px; color: var(--muted) !important; margin-top: 3px; }
 
 .notif-empty {
     padding: 20px;
@@ -316,5 +316,5 @@ table tr:hover { background: #f9fbfd; }
     color: var(--primary);
     text-decoration: none;
     border-top: 1px solid var(--border);
-    background: #f8fafc;
+    background: #314962;
 }
