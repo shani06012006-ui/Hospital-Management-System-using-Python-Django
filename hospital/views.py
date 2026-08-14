@@ -1,13 +1,22 @@
-from django.contrib import messages
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import JsonResponse
-from django.shortcuts import redirect, get_object_or_404
-from django.urls import reverse_lazy, reverse
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView, TemplateView
+import logging
 
-from .models import Doctor, Patient, Appointment, Notification
-from .forms import DoctorForm, PatientForm, AppointmentForm
+from django.contrib import messages
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404, redirect
+from django.urls import NoReverseMatch, reverse, reverse_lazy
+from django.views.generic import (
+    CreateView,
+    DeleteView,
+    ListView,
+    TemplateView,
+    UpdateView,
+)
+
+from .forms import AppointmentForm, DoctorForm, PatientForm
+from .models import Appointment, Doctor, Notification, Patient
+
+logger = logging.getLogger(__name__)
+
 
 class HomeView(TemplateView):
     """Dashboard showing overall hospital statistics."""
@@ -183,8 +192,11 @@ def mark_notification_read(request, pk):
     if notification.link:
         try:
             return redirect(reverse(notification.link))
-        except Exception:
-            pass
+        except NoReverseMatch:
+            logger.warning(
+                "Notification %s has an invalid link '%s'; falling back to referrer.",
+                notification.pk, notification.link,
+            )
     return redirect(request.META.get('HTTP_REFERER', 'home'))
 
 
