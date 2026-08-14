@@ -1,0 +1,80 @@
+{% extends 'hospital/base.html' %}
+
+{% block title %}Dashboard | Hospital Management System{% endblock %}
+
+{% block content %}
+    <div class="page-header">
+        <h1>Dashboard</h1>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-box">
+            <h3>{{ doctor_count }}</h3>
+            <p>Total Doctors</p>
+        </div>
+        <div class="stat-box patients">
+            <h3>{{ patient_count }}</h3>
+            <p>Total Patients</p>
+        </div>
+        <div class="stat-box appointments">
+            <h3>{{ appointment_count }}</h3>
+            <p>Total Appointments</p>
+        </div>
+        <div class="stat-box admitted">
+            <h3>{{ admitted_count }}</h3>
+            <p>Currently Admitted</p>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="page-header">
+            <h1 style="font-size: 18px;">Recent Appointments</h1>
+            <a href="{% url 'appointment-add' %}" class="btn">+ New Appointment</a>
+        </div>
+
+        {% if recent_appointments %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Patient</th>
+                    <th>Doctor</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for appt in recent_appointments %}
+                <tr>
+                    <td>{{ appt.patient.name }}</td>
+                    <td>Dr. {{ appt.doctor.name }}</td>
+                    <td>{{ appt.date }}</td>
+                    <td>{{ appt.time }}</td>
+                    <td>
+                        {% if appt.status == 'CONF' %}
+                            <span class="badge badge-info">{{ appt.get_status_display }}</span>
+                        {% elif appt.status == 'DONE' %}
+                            <span class="badge badge-success">{{ appt.get_status_display }}</span>
+                        {% elif appt.status == 'CANC' %}
+                            <span class="badge badge-danger">{{ appt.get_status_display }}</span>
+                        {% else %}
+                            <span class="badge badge-warning">{{ appt.get_status_display }}</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+            <div class="empty-state">No appointments yet.</div>
+        {% endif %}
+    </div>
+
+    <div class="card">
+        <p><strong>Pending appointments:</strong> {{ pending_appointments }}</p>
+        <p style="margin-bottom:0;">
+            <a href="{% url 'doctor-add' %}" class="btn btn-sm">+ Add Doctor</a>
+            <a href="{% url 'patient-add' %}" class="btn btn-sm btn-secondary">+ Register Patient</a>
+        </p>
+    </div>
+{% endblock %}

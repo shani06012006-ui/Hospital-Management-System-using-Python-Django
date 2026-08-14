@@ -1,0 +1,30 @@
+{% extends 'hospital/base.html' %}
+
+{% block title %}{% if object %}Edit{% else %}Add{% endif %} Doctor | Hospital Management System{% endblock %}
+
+{% block content %}
+    <div class="page-header">
+        <h1>{% if object %}Edit Doctor{% else %}Add Doctor{% endif %}</h1>
+    </div>
+
+    <div class="card">
+        <form method="post">
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="form-group">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.errors %}
+                        <div style="color:#dc3545; font-size:13px; margin-top:4px;">{{ field.errors|striptags }}</div>
+                    {% endif %}
+                    {% if field.help_text %}
+                        <small style="color:#6c757d;">{{ field.help_text }}</small>
+                    {% endif %}
+                </div>
+            {% endfor %}
+
+            <button type="submit" class="btn">Save Doctor</button>
+            <a href="{% url 'doctor-list' %}" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+{% endblock %}

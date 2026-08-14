@@ -1,0 +1,35 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Hospital Management System{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'hospital/css/style.css' %}">
+</head>
+<body>
+
+    <div class="navbar">
+        <a href="{% url 'home' %}" class="brand">Hospital<span>MS</span></a>
+        <nav>
+            <a href="{% url 'home' %}">Dashboard</a>
+            <a href="{% url 'doctor-list' %}">Doctors</a>
+            <a href="{% url 'patient-list' %}">Patients</a>
+            <a href="{% url 'appointment-list' %}">Appointments</a>
+        </nav>
+    </div>
+
+    <div class="container">
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </div>
+
+</body>
+</html>

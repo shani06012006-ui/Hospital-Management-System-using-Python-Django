@@ -1,0 +1,69 @@
+{% extends 'hospital/base.html' %}
+
+{% block title %}Appointments | Hospital Management System{% endblock %}
+
+{% block content %}
+    <div class="page-header">
+        <h1>Appointments</h1>
+        <a href="{% url 'appointment-add' %}" class="btn">+ New Appointment</a>
+    </div>
+
+    <div class="card">
+        {% if appointments %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Patient</th>
+                    <th>Doctor</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Reason</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for appt in appointments %}
+                <tr>
+                    <td>{{ appt.patient.name }}</td>
+                    <td>Dr. {{ appt.doctor.name }}</td>
+                    <td>{{ appt.date }}</td>
+                    <td>{{ appt.time }}</td>
+                    <td>{{ appt.reason|default:"-" }}</td>
+                    <td>
+                        {% if appt.status == 'CONF' %}
+                            <span class="badge badge-info">{{ appt.get_status_display }}</span>
+                        {% elif appt.status == 'DONE' %}
+                            <span class="badge badge-success">{{ appt.get_status_display }}</span>
+                        {% elif appt.status == 'CANC' %}
+                            <span class="badge badge-danger">{{ appt.get_status_display }}</span>
+                        {% else %}
+                            <span class="badge badge-warning">{{ appt.get_status_display }}</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{% url 'appointment-edit' appt.pk %}" class="btn btn-sm btn-secondary">Edit</a>
+                        <a href="{% url 'appointment-delete' appt.pk %}" class="btn btn-sm btn-danger">Delete</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        {% if is_paginated %}
+        <div class="pagination">
+            {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
+            {% endif %}
+            <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">Next</a>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        {% else %}
+            <div class="empty-state">No appointments found. <a href="{% url 'appointment-add' %}">Schedule one now</a>.</div>
+        {% endif %}
+    </div>
+{% endblock %}

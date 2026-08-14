@@ -1,0 +1,18 @@
+{% extends 'hospital/base.html' %}
+
+{% block title %}Delete Patient | Hospital Management System{% endblock %}
+
+{% block content %}
+    <div class="page-header">
+        <h1>Delete Patient</h1>
+    </div>
+
+    <div class="card">
+        <p>Are you sure you want to delete <strong>{{ object.name }}</strong>'s record? This action cannot be undone.</p>
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Yes, Delete</button>
+            <a href="{% url 'patient-list' %}" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+{% endblock %}

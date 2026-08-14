@@ -1,0 +1,70 @@
+{% extends 'hospital/base.html' %}
+
+{% block title %}Doctors | Hospital Management System{% endblock %}
+
+{% block content %}
+    <div class="page-header">
+        <h1>Doctors</h1>
+        <a href="{% url 'doctor-add' %}" class="btn">+ Add Doctor</a>
+    </div>
+
+    <form method="get" class="search-bar">
+        <input type="text" name="q" placeholder="Search doctor by name..." value="{{ request.GET.q }}">
+        <button type="submit" class="btn btn-secondary">Search</button>
+    </form>
+
+    <div class="card">
+        {% if doctors %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Department</th>
+                    <th>Qualification</th>
+                    <th>Phone</th>
+                    <th>Experience</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for doctor in doctors %}
+                <tr>
+                    <td>Dr. {{ doctor.name }}</td>
+                    <td>{{ doctor.get_department_display }}</td>
+                    <td>{{ doctor.qualification|default:"-" }}</td>
+                    <td>{{ doctor.phone }}</td>
+                    <td>{{ doctor.experience_years }} yrs</td>
+                    <td>
+                        {% if doctor.available %}
+                            <span class="badge badge-success">Available</span>
+                        {% else %}
+                            <span class="badge badge-danger">Unavailable</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{% url 'doctor-edit' doctor.pk %}" class="btn btn-sm btn-secondary">Edit</a>
+                        <a href="{% url 'doctor-delete' doctor.pk %}" class="btn btn-sm btn-danger">Delete</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        {% if is_paginated %}
+        <div class="pagination">
+            {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">Previous</a>
+            {% endif %}
+            <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">Next</a>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        {% else %}
+            <div class="empty-state">No doctors found. <a href="{% url 'doctor-add' %}">Add one now</a>.</div>
+        {% endif %}
+    </div>
+{% endblock %}

@@ -1,0 +1,209 @@
+:root {
+    --primary: #0d6efd;
+    --primary-dark: #0b5ed7;
+    --success: #198754;
+    --danger: #dc3545;
+    --warning: #ffc107;
+    --bg: #f4f6f9;
+    --card-bg: #ffffff;
+    --text: #212529;
+    --muted: #6c757d;
+    --border: #e2e6ea;
+}
+
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+}
+
+.navbar {
+    background: var(--primary);
+    color: #fff;
+    padding: 14px 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.navbar .brand {
+    font-size: 22px;
+    font-weight: 700;
+    color: #fff;
+    text-decoration: none;
+}
+
+.navbar .brand span { color: #ffe08a; }
+
+.navbar nav a {
+    color: #eaf2ff;
+    text-decoration: none;
+    margin-left: 20px;
+    font-weight: 500;
+}
+
+.navbar nav a:hover { color: #ffe08a; }
+
+.container {
+    max-width: 1100px;
+    margin: 30px auto;
+    padding: 0 20px;
+}
+
+.card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.stat-box {
+    background: var(--card-bg);
+    border-radius: 10px;
+    padding: 18px 20px;
+    border-left: 5px solid var(--primary);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+
+.stat-box h3 { margin: 0; font-size: 28px; }
+.stat-box p { margin: 4px 0 0; color: var(--muted); font-size: 14px; }
+
+.stat-box.patients { border-left-color: var(--success); }
+.stat-box.appointments { border-left-color: var(--warning); }
+.stat-box.admitted { border-left-color: var(--danger); }
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 18px;
+}
+
+.page-header h1 { margin: 0; font-size: 24px; }
+
+.btn {
+    display: inline-block;
+    padding: 9px 18px;
+    border-radius: 6px;
+    border: none;
+    background: var(--primary);
+    color: #fff;
+    text-decoration: none;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.btn:hover { background: var(--primary-dark); }
+.btn-danger { background: var(--danger); }
+.btn-danger:hover { background: #bb2d3b; }
+.btn-secondary { background: var(--muted); }
+.btn-secondary:hover { background: #565e64; }
+.btn-sm { padding: 5px 12px; font-size: 13px; }
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--card-bg);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+table th, table td {
+    padding: 12px 14px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    font-size: 14px;
+}
+
+table th {
+    background: #eef2f7;
+    font-weight: 600;
+    color: #333;
+}
+
+table tr:hover { background: #f9fbfd; }
+
+.badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.badge-success { background: #d1e7dd; color: #0f5132; }
+.badge-warning { background: #fff3cd; color: #664d03; }
+.badge-danger { background: #f8d7da; color: #842029; }
+.badge-info { background: #cfe2ff; color: #084298; }
+
+.form-control {
+    width: 100%;
+    padding: 9px 12px;
+    border: 1px solid #ccd2d8;
+    border-radius: 6px;
+    font-size: 14px;
+    margin-top: 4px;
+}
+
+.form-group { margin-bottom: 16px; }
+.form-group label { font-weight: 600; font-size: 14px; }
+
+.search-bar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+.search-bar input {
+    flex: 1;
+    padding: 9px 12px;
+    border-radius: 6px;
+    border: 1px solid #ccd2d8;
+}
+
+.messages { list-style: none; padding: 0; margin: 0 0 16px; }
+.messages li {
+    padding: 10px 16px;
+    border-radius: 6px;
+    background: #d1e7dd;
+    color: #0f5132;
+    margin-bottom: 8px;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--muted);
+}
+
+.pagination {
+    margin-top: 16px;
+    display: flex;
+    gap: 8px;
+}
+
+.pagination a, .pagination span {
+    padding: 6px 12px;
+    border-radius: 6px;
+    background: #fff;
+    border: 1px solid var(--border);
+    text-decoration: none;
+    color: var(--text);
+    font-size: 13px;
+}
