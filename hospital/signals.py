@@ -45,3 +45,7 @@ def notify_on_patient_admit(sender, instance, created, **kwargs):
             message=f"Patient {instance.name} has been admitted.",
             link='patient-list',
         )
+        
+        
+        
+        
