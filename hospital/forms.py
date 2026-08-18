@@ -1,5 +1,6 @@
 from django import forms
-from .models import Doctor, Patient, Appointment
+
+from .models import Appointment, Doctor, Patient
 
 
 class DoctorForm(forms.ModelForm):
